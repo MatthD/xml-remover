@@ -4,6 +4,7 @@ var cheerio = require('cheerio'),
     args = require('args'),
     kuler = require('kuler'),
     fs = require('fs'),
+    xmllint = require('xmllint'),
     argv = process.argv;
 
 var options = args.Options.parse([
@@ -52,15 +53,28 @@ if(!(parsed.balise || parsed.attribut)){
 
   parsed.input = (parsed.input).toString()
 
-  console.log("Path : " , parsed.input);
   fs.stat(parsed.input , function(err, stats){
-    if(!err){
-      console.log("File ? : " , stats.isFile());
+    if(err){
+      console.log(kuler("File or Folder does not exist" , "red"));
+      return;
     }
-    console.log(kuler("File or Folder does not exist" , "red"));
-  });
+    // If it's an existing file.
+    if(stats.isFile()){
+      console.log(kuler("Checking XML file ... " , "green"));
+      var file  =  fs.readFile(parsed.input , function(err, data){
+        var check = xmllint.validateXML({
+          xml: data
+        });
+        console.log("check " , check);
+      });
+      
 
-  fs.readFile()
+    }
+    // If it's an existing file.
+    if(stats.isDirectory()){
+      console.log(kuler("Checking folder ... " , "green"));
+    }
+  });
 
     $ = cheerio.load('<ul id="fruits">\
 <li class="apple test">Apple</li>\
