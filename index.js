@@ -15,10 +15,11 @@ var cheerio = require('cheerio'),
 
 var options = args.Options.parse([
   {
-    name: 'balise',
-    shortName: 'b',
-    help: 'Remove all asked balises',
+    name: 'help',
+    shortName: 'h',
+    help: 'Get Help',
     defaultValue : null,
+    type : "bool",
     required : false
   },
   {
@@ -29,9 +30,27 @@ var options = args.Options.parse([
     required : true
   },
   {
+    name: 'balise',
+    shortName: 'b',
+    help: 'Remove all balises (ex: -b span)',
+    defaultValue : null,
+    required : false
+  },
+  {
     name: 'attribut',
     shortName: 'a',
-    help: 'Remove all asked attributs',
+    help: 'Remove all asked attributs (ex: -a type)',
+    defaultValue : null,
+    required : false
+  },
+  {
+    name: 'method',
+    shortName: 'm',
+    help: '(See methods values below) \n\
+           \n\
+           and -> Remove balises & attributs \n\
+           bwa -> Remove balises with attribut name \n\
+           aib -> Remove attribut in balises',
     defaultValue : null,
     required : false
   }
@@ -42,6 +61,12 @@ var parsed = args.parser(argv).parse(options);
 /* ----------- */
 /*  CHECK ARGS */
 /* ----------- */
+
+if(parsed.help){
+  // shows help 
+  console.info(options.getHelp());
+  return;
+}
 
 if(!parsed.input){
   console.info(kuler("Please indicate XML File/Folder , see help" , "red"));
@@ -94,6 +119,9 @@ if(!(parsed.balise || parsed.attribut)){
       return;
     }
     $ = cheerio.load(file, {xmlMode: true});
+    if(parsed.balise && parsed.attribut){
+      $(parsed.balise).remove();
+    }
     if(parsed.balise){
       $(parsed.balise).remove();
     }
