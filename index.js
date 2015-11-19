@@ -9,6 +9,7 @@ var cheerio = require('cheerio'),
     argv = process.argv,
     file,
     check,
+    isRm,
     $;
 
 
@@ -43,12 +44,12 @@ var parsed = args.parser(argv).parse(options);
 /* ----------- */
 
 if(!parsed.input){
-  console.log(kuler("Please indicate XML File/Folder , see help" , "red"));
+  console.info(kuler("Please indicate XML File/Folder , see help" , "red"));
   return;
 }
 
 if(!(parsed.balise || parsed.attribut)){
-  console.log(kuler("Please indicate balise/attribut to remove, see help" , "red"));
+  console.info(kuler("Please indicate balise/attribut to remove, see help" , "red"));
   return;
 }
 
@@ -60,24 +61,36 @@ if(!(parsed.balise || parsed.attribut)){
 
   fs.stat(parsed.input , function(err, stats){
     if(err){
-      console.log(kuler("File or Folder does not exist" , "red"));
+      console.error(kuler("File or Folder does not exist" , "red"));
       return;
     }
     // If it's an existing file.
     if(stats.isFile()){
-      console.log(kuler("Checking XML file ... " , "green")); 
+      rmAndPretty(parsed.input);
+      process.stdout.write(kuler("File processed : \r"  , "green"));
     }
     // If it's an existing file.
     if(stats.isDirectory()){
-      console.log(kuler("Checking folder ... " , "green"));
+      var nbOfFiles = 0;
+      process.stdout.write(kuler("Folder detected ... \r" , "orange"));
+      fs.readdir(parsed.input, function(err, files){
+        for (var i = 0 ; i < files.length ; i++){
+          isRm = rmAndPretty(parsed.input + files[i]);
+          if(isRm){
+            nbOfFiles++;
+          }
+        }
+        console.info(kuler("Number of files processed : " + nbOfFiles , "green"));
+      });
     }
   });
 
-  var rmAndPretty = function(path , file){
-    file = fs.readFileSync(parsed.input).toString();
+  var rmAndPretty = function(path){
+    file = fs.readFileSync(path).toString();
+    process.stdout.write(kuler("Checking XML file ... \r" , "orange")); 
     check = isXml(file);      
     if(!check){
-      console.error(kuler("It's not an XML file :(" , "red"));
+      process.stdout.write(kuler("Not XML file detected \r" , "red"));
       return;
     }
     $ = cheerio.load(file, {xmlMode: true});
@@ -85,11 +98,10 @@ if(!(parsed.balise || parsed.attribut)){
       $(parsed.balise).remove();
     }
     if(parsed.attribut){
-      $(parsed.attribut).remove();
+      $("*").removeAttr(parsed.attribut);
     }
     var xml = $.xml().replace(/^\s*$/gm, '');
     xml = pd.pd.xml(xml);
-    fs.writeFile(parsed.input , xml , function(){
-      console.log(kuler("Suppresion(s) éffectuées" , "green"));
-    });
+    fs.writeFileSync(path , xml);
+    return true;
   };
