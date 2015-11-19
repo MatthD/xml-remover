@@ -7,6 +7,7 @@ var cheerio = require('cheerio'),
     isXml = require('is-xml'),
     pd = require('pretty-data'),
     argv = process.argv,
+    fnRM,
     file,
     check,
     isRm,
@@ -78,14 +79,46 @@ if(!(parsed.balise || parsed.attribut)){
   return;
 }
 
+//If no method asked
+if(!parsed.method || parsed.method === "and"){
+  if(parsed.balise){
+    fnRM = function(){
+      $(parsed.balise).remove();
+    }
+  }
+  if(parsed.attribut){
+    fnRM = function(){
+      $(attrFull).removeAttr(attName);
+    }
+  }
+}
+// If method asked + balise & attribute
+else if(parsed.balise && parsed.attribut){
+  if(parsed.method === "bwa"){
+    fnRM = function(){
+      $(attrFullMethod).remove();
+    }
+  }
+  else if(parsed.method === "aib"){
+    fnRM = function(){
+      $(parsed.balise).removeAttr(attrFullMethod);
+    }
+  }
+}
+// People send method without balise Or attribut
+else{
+  console.error("You asked method but you forgot balise or attribut !");
+  process.exit;
+}
+
 /* ----------- */
 /*  SPLIT VAL  */
 /* ----------- */
 
 var attVal = (parsed.attribut).split("::")[1],
     attName = (parsed.attribut).split("::")[0],
-    attrFull = attVal ? '[' + attName + '="' + attVal + '"]' : '*',
-    attrFullMethod = attVal ? '[' + attName + '="' + attVal + '"]' : attVal;
+    attrFull = attVal ? '[' + attName + '~="' + attVal + '"]' : '*',
+    attrFullMethod = attVal ? '[' + attName + '~="' + attVal + '"]' : attVal;
 
 console.log("attfull " , attrFull);
 
@@ -130,29 +163,7 @@ console.log("attfull " , attrFull);
       return;
     }
     $ = cheerio.load(file, {xmlMode: true});
-    //If no method asked
-    if(!parsed.method || parsed.method === "and"){
-      if(parsed.balise){
-        $(parsed.balise).remove();
-      }
-      if(parsed.attribut){
-        $(attrFull).removeAttr(attName);
-      }
-    }
-    // If method asked + balise & attribute
-    else if(parsed.balise && parsed.attribut){
-      if(parsed.method === "bwa"){
-        $(parsed.balise+"[" + attrFullMethod + "]").remove();
-      }
-      else if(parsed.method === "aib"){
-        $(parsed.balise).removeAttr(attrFullMethod);
-      }
-    }
-    // People send method without balise Or attribut
-    else{
-      console.error("You asked method but you forgot balise or attribut !");
-      process.exit;
-    }
+    fnRM();
 
     var xml = $.xml().replace(/^\s*$/gm, '');
     xml = pd.pd.xml(xml);
