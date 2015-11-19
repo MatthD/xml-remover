@@ -119,15 +119,30 @@ if(!(parsed.balise || parsed.attribut)){
       return;
     }
     $ = cheerio.load(file, {xmlMode: true});
-    if(parsed.balise && parsed.attribut){
-      $(parsed.balise).remove();
+    //If no method asked
+    if(!parsed.method || parsed.method === "and"){
+      if(parsed.balise){
+        $(parsed.balise).remove();
+      }
+      if(parsed.attribut){
+        $("*").removeAttr(parsed.attribut);
+      }
     }
-    if(parsed.balise){
-      $(parsed.balise).remove();
+    // If method asked + balise & attribute
+    else if(parsed.balise && parsed.attribut){
+      if(parsed.method === "bwa"){
+        $(parsed.balise+"[" + parsed.attribut + "]").remove();
+      }
+      else if(parsed.method === "aib"){
+        $(parsed.balise).removeAttr(parsed.attribut);
+      }
     }
-    if(parsed.attribut){
-      $("*").removeAttr(parsed.attribut);
+    // People send method without balise Or attribut
+    else{
+      console.error("You asked method but you forgot balise or attribut !");
+      process.exit;
     }
+
     var xml = $.xml().replace(/^\s*$/gm, '');
     xml = pd.pd.xml(xml);
     fs.writeFileSync(path , xml);
