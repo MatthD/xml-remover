@@ -1,12 +1,16 @@
 {
-  "name": "xml-remover",
+  "name": "xmlrm",
   "version": "1.0.0",
   "description": "",
+  "preferGlobal": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "bin": {
+    "xmlrm": "index.js"
+  },
+  "author": "Matthias DIEUDONNE",
   "license": "ISC",
   "dependencies": {
     "args": "0.0.3",

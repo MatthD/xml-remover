@@ -1,4 +1,4 @@
-/* Small APP to remove XML Balises , Attributes ... */
+#!/usr/bin/env node
 
 var cheerio = require('cheerio'),
     args = require('args'),
