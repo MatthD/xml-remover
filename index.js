@@ -79,6 +79,17 @@ if(!(parsed.balise || parsed.attribut)){
 }
 
 /* ----------- */
+/*  SPLIT VAL  */
+/* ----------- */
+
+var attVal = (parsed.attribut).split("::")[1],
+    attName = (parsed.attribut).split("::")[0],
+    attrFull = attVal ? '[' + attName + '="' + attVal + '"]' : '*',
+    attrFullMethod = attVal ? '[' + attName + '="' + attVal + '"]' : attVal;
+
+console.log("attfull " , attrFull);
+
+/* ----------- */
 /*  DEL ELEM   */
 /* ----------- */
 
@@ -125,16 +136,16 @@ if(!(parsed.balise || parsed.attribut)){
         $(parsed.balise).remove();
       }
       if(parsed.attribut){
-        $("*").removeAttr(parsed.attribut);
+        $(attrFull).removeAttr(attName);
       }
     }
     // If method asked + balise & attribute
     else if(parsed.balise && parsed.attribut){
       if(parsed.method === "bwa"){
-        $(parsed.balise+"[" + parsed.attribut + "]").remove();
+        $(parsed.balise+"[" + attrFullMethod + "]").remove();
       }
       else if(parsed.method === "aib"){
-        $(parsed.balise).removeAttr(parsed.attribut);
+        $(parsed.balise).removeAttr(attrFullMethod);
       }
     }
     // People send method without balise Or attribut
