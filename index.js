@@ -4,8 +4,13 @@ var cheerio = require('cheerio'),
     args = require('args'),
     kuler = require('kuler'),
     fs = require('fs'),
-    xmllint = require('xmllint'),
-    argv = process.argv;
+    isXml = require('is-xml'),
+    pd = require('pretty-data'),
+    argv = process.argv,
+    file,
+    check,
+    $;
+
 
 var options = args.Options.parse([
   {
@@ -60,15 +65,7 @@ if(!(parsed.balise || parsed.attribut)){
     }
     // If it's an existing file.
     if(stats.isFile()){
-      console.log(kuler("Checking XML file ... " , "green"));
-      var file  =  fs.readFile(parsed.input , function(err, data){
-        var check = xmllint.validateXML({
-          xml: data
-        });
-        console.log("check " , check);
-      });
-      
-
+      console.log(kuler("Checking XML file ... " , "green")); 
     }
     // If it's an existing file.
     if(stats.isDirectory()){
@@ -76,19 +73,23 @@ if(!(parsed.balise || parsed.attribut)){
     }
   });
 
-    $ = cheerio.load('<ul id="fruits">\
-<li class="apple test">Apple</li>\
-<li class="orange pear">Orange</li>\
-<li class="pear">Pear2</li>\
-</ul>' , {xmlMode: true});
-
-console.log("parsed " , parsed);
-
-$('li').filter(function(i, el) {
-  console.log("li : " , $(this).text() );
-  if($(this).attr('class').indexOf("orange2") > -1){
-    $(this).remove();
-  }
-});
-
-console.log("$ "  , $.xml());
+  var rmAndPretty = function(path , file){
+    file = fs.readFileSync(parsed.input).toString();
+    check = isXml(file);      
+    if(!check){
+      console.error(kuler("It's not an XML file :(" , "red"));
+      return;
+    }
+    $ = cheerio.load(file, {xmlMode: true});
+    if(parsed.balise){
+      $(parsed.balise).remove();
+    }
+    if(parsed.attribut){
+      $(parsed.attribut).remove();
+    }
+    var xml = $.xml().replace(/^\s*$/gm, '');
+    xml = pd.pd.xml(xml);
+    fs.writeFile(parsed.input , xml , function(){
+      console.log(kuler("Suppresion(s) éffectuées" , "green"));
+    });
+  };
