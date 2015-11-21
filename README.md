@@ -17,7 +17,7 @@ Can be lauch on file/folder , if folder , will check which one is xml.
 `xmlrm —help`
 
 
-###Example
+### Example
 
 `xmlrm -i /Path/To/File.xml -b span`
 
