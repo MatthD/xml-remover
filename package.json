@@ -1,6 +1,6 @@
 {
   "name": "xmlrm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "preferGlobal": true,
   "main": "index.js",
