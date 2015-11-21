@@ -21,8 +21,11 @@ Can be lauch on file/folder , if folder , will check which one is xml.
 
 `xmlrm -i /Path/To/File.xml -b span`
 
-
 Will remove all span from File.xml
+
+`xmlrm -i /Path/To/Folder/ -b span`
+
+Attention : to work with folder don't forget "/" after folder name !
 
 
 ### Params
@@ -44,17 +47,17 @@ Will remove all span from File.xml
            
 ### Complexe example
 
-- `xmlrm -i /Path/To/folder -b title -a type -m bwa`
+- `xmlrm -i /Path/To/folder/ -b title -a type -m bwa`
 
     Will remove all `<title> ` with a "type" attribute
     
     
-- `xmlrm -i /Path/To/folder -b title -a type::value -m bwa`
+- `xmlrm -i /Path/To/folder/ -b title -a type::value -m bwa`
 
     Will remove all `<title> ` with a "type" attribute that have a "value" value
     
     
-- `xmlrm -i /Path/To/folder -b title -a type -m aib`
+- `xmlrm -i /Path/To/file.xml -b title -a type -m aib`
 
     Will remove all "type"  attribute in  `<title> ` balises
 
