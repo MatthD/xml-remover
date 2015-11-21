@@ -60,6 +60,19 @@ var options = args.Options.parse([
 var parsed = args.parser(argv).parse(options);
 
 /* ----------- */
+/*  SPLIT VAL  */
+/* ----------- */
+if(parsed.attribut){
+  console.log("attribut envoyé ");
+  var attVal = (parsed.attribut).split("::").length > 1 ? (parsed.attribut).split("::")[1] : null ,
+    attName = (parsed.attribut).split("::").length > 1 ? (parsed.attribut).split("::")[0] : parsed.attribut ,
+    attrFull = attVal ? '[' + attName + '~="' + attVal + '"]' : '*',
+    attrFullMethod = attVal ? '[' + attName + '~="' + attVal + '"]' : "[" + attName+ "]";
+}
+
+console.log("attfull " , attrFull , " attrFullMethod ", attrFullMethod);
+
+/* ----------- */
 /*  CHECK ARGS */
 /* ----------- */
 
@@ -101,7 +114,7 @@ else if(parsed.balise && parsed.attribut){
   }
   else if(parsed.method === "aib"){
     fnRM = function(){
-      $(parsed.balise).removeAttr(attrFullMethod);
+      $(parsed.balise + attrFullMethod).removeAttr(attName);
     }
   }
 }
@@ -111,16 +124,7 @@ else{
   process.exit;
 }
 
-/* ----------- */
-/*  SPLIT VAL  */
-/* ----------- */
 
-var attVal = (parsed.attribut).split("::")[1],
-    attName = (parsed.attribut).split("::")[0],
-    attrFull = attVal ? '[' + attName + '~="' + attVal + '"]' : '*',
-    attrFullMethod = attVal ? '[' + attName + '~="' + attVal + '"]' : attVal;
-
-console.log("attfull " , attrFull);
 
 /* ----------- */
 /*  DEL ELEM   */
