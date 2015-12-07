@@ -142,8 +142,6 @@ else if(parsed.balise && parsed.attribut){
         }
         // $(parsed.balise + "["+  attName +"='"+ attVal[i] +"']").remove(attName);
       };
-      console.log(":not(" , attrList , ")");
-      console.log("combien ? : " , $(parsed.balise).not(attrList).length);
       $(parsed.balise).not(attrList).remove();
     }
   }

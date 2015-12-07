@@ -45,7 +45,9 @@ Attention : to work with folder don't forget "/" after folder name !
            bwoa -> Remove balises withOut attribut name
            
            
-           
+### Specific sub item
+To point on a specific subitem just use syntax  `-b "body div element"`
+
 ### Complexe example
 
 - `xmlrm -i /Path/To/folder/ -b title -a type -m bwa`
@@ -62,9 +64,9 @@ Attention : to work with folder don't forget "/" after folder name !
 
     Will remove all "type"  attribute in  `<title> ` balises
 
-- `xmlrm -i /Path/To/file.xml -b title -a type::x,,z -m bwoa`
+- `xmlrm -i /Path/To/file.xml -b "body title" -a type::x,,z -m bwoa`
 
-    Will remove all `<title> ` with a "type" attribute that does not have a "x" or a "z" values 
+    Will remove all `<title> ` in body with a "type" attribute that does not have a "x" or a "z" values 
     for example `<title type="y">` will be removed
 
 
