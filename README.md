@@ -42,6 +42,7 @@ Attention : to work with folder don't forget "/" after folder name !
            and -> Remove balises & attributs (Enable by default)
            bwa -> Remove balises with attribut name
            aib -> Remove attribut in balises 
+           bwoa -> Remove balises withOut attribut name
            
            
            
@@ -60,6 +61,12 @@ Attention : to work with folder don't forget "/" after folder name !
 - `xmlrm -i /Path/To/file.xml -b title -a type -m aib`
 
     Will remove all "type"  attribute in  `<title> ` balises
+
+- `xmlrm -i /Path/To/file.xml -b title -a type::x,,z -m bwoa`
+
+    Will remove all `<title> ` with a "type" attribute that does not have a "x" or a "z" values 
+    for example `<title type="y">` will be removed
+
 
 
 
