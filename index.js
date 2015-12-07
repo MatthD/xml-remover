@@ -66,7 +66,7 @@ var parsed = args.parser(argv).parse(options);
 /*  SPLIT VAL  */
 /* ----------- */
 if(parsed.attribut){
-  var attVal = (parsed.attribut).split("::").length > 1 ? (parsed.attribut).split("::")[1].split(",,") : null ,
+  var attVal = (parsed.attribut).split("::").length > 1 ? (parsed.attribut).split("::")[1].split(",,") : 0 ,
       attName = (parsed.attribut).split("::").length > 1 ? (parsed.attribut).split("::")[0] : parsed.attribut ;
 }
 
@@ -107,8 +107,12 @@ if(!parsed.method || parsed.method === "and"){
 else if(parsed.balise && parsed.attribut){
   if(parsed.method === "bwa"){
     fnRM = function(){
+      if(!attVal.length > 0){
+        $(parsed.balise + "["+  attName +"]").remove();
+        return;
+      }
       for (var i = 0; i < attVal.length; i++) {
-        $("["+  attName +"='"+ attVal[i] +"']").remove();
+        $(parsed.balise + "["+  attName +"='"+ attVal[i] +"']").remove();
       };
     }
   }
@@ -138,7 +142,9 @@ else if(parsed.balise && parsed.attribut){
         }
         // $(parsed.balise + "["+  attName +"='"+ attVal[i] +"']").remove(attName);
       };
-      $(parsed.balise + ":not("+ attrList +")").remove();
+      console.log(":not(" , attrList , ")");
+      console.log("combien ? : " , $(parsed.balise).not(attrList).length);
+      $(parsed.balise).not(attrList).remove();
     }
   }
 }
