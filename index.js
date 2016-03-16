@@ -13,7 +13,6 @@ var cheerio = require('cheerio'),
     isRm,
     $;
 
-
 var options = args.Options.parse([
   {
     name: 'help',
@@ -196,7 +195,7 @@ else{
       process.stdout.clearLine()
       return;
     }
-    $ = cheerio.load(file, {xmlMode: true});
+    $ = cheerio.load(file, {xmlMode: true, decodeEntities : false});
     fnRM();
     process.stdout.write("\r");
     process.stdout.write("File " + kuler(index, "orange") +" / "+ kuler(filesLength , "green") + " parsed ... ");
